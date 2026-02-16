@@ -6,10 +6,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Made in Egypt](https://img.shields.io/badge/Made%20in-Egypt%20🇪🇬-green.svg)](https://github.com/gomgom-40)
 
-> One of the first MAX7219 display systems built around an
-> event-driven architecture with an intelligent priority queue,
-> designed to prevent display conflicts in smart home environments.
-> Transform cheap MAX7219 LED matrix into an intelligent event-driven smart clock - $5 hardware, premium features
+> One of the first event-driven MAX7219 display systems featuring an intelligent priority queue for conflict-free smart-home rendering.
+
+> Transform cheap MAX7219 LED matrix into an intelligent event-driven smart clock - $5 hardware, premium features.
 
 ## 📖 Overview
 
