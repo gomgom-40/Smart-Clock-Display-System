@@ -8,7 +8,9 @@
 
 > One of the first event-driven MAX7219 display systems featuring an intelligent priority queue for conflict-free smart-home rendering.
 
-> Transform cheap MAX7219 LED matrix into an intelligent event-driven smart clock - $5 hardware, premium features.
+> Unlike traditional Arduino polling-based displays, this system uses true event-driven rendering with priority-based display ownership.
+
+> Transform cheap MAX7219 LED matrix into an intelligent event-driven smart clock — $5 hardware, premium features.
 
 ## 📖 Overview
 
