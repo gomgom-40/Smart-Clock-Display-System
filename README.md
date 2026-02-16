@@ -54,7 +54,7 @@ An intelligent LED matrix display system that seamlessly integrates with your sm
 
 ![Smart Clock Display Demo](IMG_1437.JPG)
 
-*Real-time event-driven display showing smart home notifications*
+*Real-time event-driven display*
 
 ---
 
