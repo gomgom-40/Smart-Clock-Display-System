@@ -1,0 +1,107 @@
+
+
+1-Download precompiled Max7219 Tasmota.bin: https://tinyurl.com/tasmota-max7219DMD
+2-Tasmota Max7219 Documentation: https://tasmota.github.io/docs/MAX7219/
+
+The driver enables the display of ascii text on MAX7219 based 8x8 LED dot matrix modules (1088AS).
+
+#define USE_DISPLAY_MAX7219_MATRIX
+and build tasmota_display
+
+Connect the MAX7219 display module's pins to any free GPIOs of the ESP8266 or ESP32 module.
+VCC should be 5V. Depending on the number of used modules and the brightness, the used current can be more than 500 mA.
+Connect the 5 outgoing pins (VCC, GND, DI, CS, CLK) of the first module to the next one.
+
+With this you can connect up to 32 modules.
+To extend the display height, multiple rows are supported. Each module row starts from left to right.
+Assign the pins as follows from Tasmota's GUI:
+
+DIN hardware pin --> "MAX7219 DIN"
+CS hardware pin --> "MAX7219 CS"
+CLK hardware pin --> "MAX7219 CLK"
+
+Once the GPIO configuration is saved and the ESP8266/ESP32 module restarts,
+set the Display Model to 19 and Display Mode to 0
+
+Depending on the order of the wired 8x8 matrix modules you have got a display of size pixel_width x pixel_height.
+The size has to be set with the commands "DisplayWidth <pixel_width>" and "DisplayHeight <pixel_height>"
+
+After the ESP8266/ESP32 module restarts again, turn ON the display with the command "Power 1"
+Now, the following "Display" commands can be used:
+
+DisplayText text
+Sends the text to the display.
+If the text fits into the display, it is shown in the center.
+Otherwise it scrolls to the left and repeats as long it is cleared or new "DisplayText" overwrites it.
+
+DisplayDimmer [0..100]
+Sets the intensity of the display.
+
+DisplayBlinkrate [0..3]
+0: not blinking
+1: slow, 2: medium 3: fast blinking
+
+Power [ON|OFF]
+Sitches the display on or off. When "off", the display buffer is not cleared and will be shown again when after "Power ON".
+Other display commands are still active when off.
+
+DisplayClear
+Clears the display
+
+DisplayScrollDelay [0..15] // default = 0
+Sets the speed of text scroll. Smaller delay = faster scrolling.
+The maximum scroll speed is 50ms per pixel on DisplayScrollDelay 0.
+
+DisplayWidth [8..256]
+Sets the pixel width of the display (8x number of modules in a row)
+
+DisplayHeight [8..256]
+Sets the pixel height of the display (8x number of module rows)
+
+DisplayRotate [0|2]
+0: normal orientation; devide 0 starts at top left
+2: upside down; device 0 starts at bottom right
+
+DisplayClock [0|1|2]
+Displays a clock.
+Commands "DisplayClock 1" // 12 hr format
+"DisplayClock 2" // 24 hr format
+"DisplayClock 0" // turn off clock; please use additional cammand: DisplayMode 0
+
+If you would like to use the UTF8 latin1 character set, it cam be added by copile option:
+#define USE_UTF8_LATIN1
+
+#####################A NEW COMMAND ###################
+
+تجربة أوامر البكسل (يجب أن تعمل الآن بصيغتين):
+Display Pixel 0 0 1
+DisplayPixel 0 0 1
+تجربة نص بدء من إحداثيات XY:
+Display TextXY 0 0 Hello
+DisplayTextXY 0 0 Hello
+تحقق من حالة العرض وإعداداته:
+Display Model (يعطي موديل العرض)
+Display Font N (جرب N من 0..4 لتبديل الخطوط)
+Display Size N (جرب تقليل الحجم لجعل النص أصغر)
+Display Width <pixels> / Display Height <pixels> (تأكد أن الإعدادات تطابق مصفوفة الموديولات لديك)
+
+
+
+##################### Console Rule ##################
+
+11:20:05.875 CMD: rule
+11:20:05.882 MQT: stat/tasmota_46041E/RESULT = {"Rule1":{"State":"ON","Once":"OFF","StopOnError":"OFF","Length":56,"Free":455,"Rules":"ON system#boot DO backlog delay 30; displayclock 1 ENDON"}}
+
+11:20:19.839 CMD: rule2
+11:20:19.847 MQT: stat/tasmota_46041E/RESULT = {"Rule2":{"State":"ON","Once":"OFF","StopOnError":"OFF","Length":212,"Free":299,"Rules":"ON System#Boot DO Var1 0 ENDON ON Time#Sunrise DO IF Var1==0 THEN DisplayDimmer 10 ENDIF ENDON ON Time#Sunset DO IF Var1==0 THEN DisplayDimmer 5 ENDIF ENDON ON Rules#Timer=1 DO Var1 0 ENDON"}}
+
+OR
+
+11:08:04.733 CMD: rule2
+11:08:04.741 MQT: stat/tasmota_46041E/RESULT = {"Rule2":{"State":"ON","Once":"OFF","StopOnError":"OFF","Length":270,"Free":241,"Rules":"ON System#Boot DO Var1 0 ENDON ON Time#Sunrise DO IF (Var1==0) DisplayDimmer 10 ENDIF ENDON ON Time#Sunset DO IF (Var1==0) DisplayDimmer 5 ENDIF ENDON ON Rules#Timer=1 DO Backlog Var1 0; IF (Time<Sunrise OR Time>=Sunset) DisplayDimmer 5 ELSE DisplayDimmer 10 ENDIF ENDON"}}
+
+
+
+
+
+

@@ -6,13 +6,13 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Made in Egypt](https://img.shields.io/badge/Made%20in-Egypt%20🇪🇬-green.svg)](https://github.com/gomgom-40)
 
-> Transform cheap MAX7219 LED matrix into an intelligent event-driven smart clock - $10 hardware, premium features
+> Transform cheap MAX7219 LED matrix into an intelligent event-driven smart clock - $5 hardware, premium features
 
 ## 📖 Overview
 
 This project converts basic **MAX7219 LED Matrix modules** into a **smart display system** with:
 
-![System Demo](IMG_1435.JPG)
+![System Demo](IMG_1442.JPG)
 
 ---
 
@@ -1930,10 +1930,7 @@ SOFTWARE.
 
 ### System Photos
 
-![Hardware Setup](IMG_1435.JPG)
-*LED Matrix Display Module*
-
-![Display in Action](IMG_1436.JPG)
+![Display in Action](IMG_1442.JPG)
 *Clock Display Mode*
 
 ![Complete Setup](IMG_1437.JPG)
@@ -1970,7 +1967,7 @@ If this project helped you, please ⭐ **star this repository** and share it wit
 
 ## About
 
-Event-driven MAX7219 LED matrix smart clock with Home Assistant & Tasmota - $10 hardware, premium features
+Transform cheap LED matrix into Smart Event Driven Clock Display - $5 hardware, premium features
 
 ### Topics
 
