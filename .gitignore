@@ -1,0 +1,226 @@
+# ============================================
+# Smart Clock Display System - .gitignore
+# ============================================
+
+# ==========================================
+# SENSITIVE FILES - NEVER COMMIT THESE!
+# ==========================================
+
+# Tasmota Configuration (contains WiFi passwords & MQTT credentials)
+Config_tasmota_*.dmp
+*.dmp
+
+# Home Assistant Secrets
+secrets.yaml
+*.secret
+*.key
+*.pem
+*.crt
+
+# Personal/Private Data
+*_personal.*
+*_private.*
+*_secret.*
+my_*.txt
+private_*.txt
+
+# ==========================================
+# BACKUP & TEMPORARY FILES
+# ==========================================
+
+# Backups
+*.bak
+*.backup
+*.old
+*~
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# ==========================================
+# OPERATING SYSTEM FILES
+# ==========================================
+
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ==========================================
+# EDITOR & IDE FILES
+# ==========================================
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs (PyCharm, IntelliJ, etc.)
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# Notepad++
+*.bak
+
+# ==========================================
+# BUILD & COMPILED FILES
+# ==========================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ==========================================
+# PROJECT SPECIFIC
+# ==========================================
+
+# Test files
+test/
+testing/
+tests_output/
+
+# Development
+dev/
+development/
+sandbox/
+
+# Documentation builds
+docs/_build/
+site/
+
+# ==========================================
+# LARGE BINARY FILES (Optional)
+# ==========================================
+
+# Uncomment if you don't want to track these:
+# *.exe
+# *.bin
+# *.iso
+
+# ==========================================
+# HOME ASSISTANT SPECIFIC
+# ==========================================
+
+# Home Assistant Database
+home-assistant_v2.db
+home-assistant_v2.db-shm
+home-assistant_v2.db-wal
+
+# Home Assistant Configuration (if tracking only parts)
+# Uncomment lines you want to ignore:
+# configuration.yaml
+# automations.yaml
+# scripts.yaml
+# scenes.yaml
+# groups.yaml
+
+# ==========================================
+# MISC
+# ==========================================
+
+# Compressed files
+*.zip
+*.rar
+*.7z
+*.tar.gz
+*.tgz
+
+# Archives (except project docs)
+archive/
+old/
+deprecated/
+
+# Personal notes
+notes.txt
+TODO.txt
+ideas.txt
+
+# ==========================================
+# KEEP THESE FILES (Exceptions)
+# ==========================================
+
+# Make sure to track these important files:
+!README.md
+!LICENSE
+!CHANGELOG.md
+!.gitignore
+!*.yaml
+!*.yml
+!*.txt (documentation)
+!*.md
+
+# Track fonts
+!fonts/
+!*.ttf
+!*.otf
+
+# Track images
+!images/
+!*.jpg
+!*.jpeg
+!*.png
+!*.gif
+!*.svg
+
+# Track examples
+!examples/

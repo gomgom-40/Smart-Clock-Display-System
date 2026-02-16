@@ -1,0 +1,51 @@
+clear_smart_clock_display:
+  sequence:
+  - action: mqtt.publish
+    metadata: {}
+    data:
+      evaluate_payload: false
+      qos: 0
+      retain: false
+      topic: cmnd/tasmota_46041E/Displayclock
+      payload: '0'
+  - action: mqtt.publish
+    metadata: {}
+    data:
+      evaluate_payload: false
+      qos: 0
+      retain: false
+      topic: cmnd/tasmota_46041E/Displayclear
+  alias: clear smart clock display
+  description: ''
+display_text_on_smart_clock:
+  alias: display_smart_clock_text
+  sequence:
+  - data:
+      topic: cmnd/tasmota_46041E/Displaytext
+      payload: '{{ states(''input_text.text_to_display'') }}'
+    action: mqtt.publish
+  mode: single
+  icon: mdi:card-text
+  description: ''
+smart_clock_set_brightness:
+  alias: Set Smart Clock Brightness
+  description: Manual brightness with auto-restore after 30 minutes
+  mode: restart
+  sequence:
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/tasmota_46041E/DisplayDimmer"
+        payload: "{{ states('input_number.smart_clock_brightness') | int }}"
+    
+    - delay:
+        seconds: 1800
+    
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/tasmota_46041E/DisplayDimmer"
+        payload: >
+          {% if is_state('sun.sun', 'below_horizon') %}
+            5
+          {% else %}
+            10
+          {% endif %}

@@ -1,0 +1,490 @@
+- id: smart_clock_brightness_trigger
+  alias: Smart Clock - Brightness Slider Changed
+  description: Calls brightness script when slider changes
+  mode: restart
+  trigger:
+  - platform: state
+    entity_id: input_number.smart_clock_brightness
+  action:
+  - service: script.smart_clock_set_brightness
+  
+- id: smart-clock-idle-rotation
+  alias: Smart Clock - Idle Page Rotation
+  description: Rotates between clock, temperature, and date every 10 minutes
+  mode: restart
+  trigger:
+    - platform: time_pattern
+      minutes: /10
+  condition:
+    - condition: state
+      entity_id: switch.smart_clock
+      state: 'on'
+    
+    # Only run if idle
+    - condition: state
+      entity_id: input_select.smart_clock_priority
+      state: 'idle'
+  
+  action:
+    - service: mqtt.publish
+      data:
+        topic: cmnd/tasmota_46041E/Displayclear
+        payload: ''
+    - delay:
+        milliseconds: 200
+    - service: mqtt.publish
+      data:
+        topic: cmnd/tasmota_46041E/Displayclock
+        payload: '1'
+    - delay:
+        seconds: 5
+    - service: mqtt.publish
+      data:
+        topic: cmnd/tasmota_46041E/Displayclear
+        payload: ''
+    - service: mqtt.publish
+      data:
+        topic: cmnd/tasmota_46041E/Displayclock
+        payload: '0'
+    - delay:
+        milliseconds: 200
+    - service: mqtt.publish
+      data:
+        topic: cmnd/tasmota_46041E/Displaytext
+        payload: >
+          {% set temp = states('sensor.living_room_temperature') %}
+          {% if temp not in ['unavailable', 'unknown', 'none'] %}
+            {{ temp | float | round(1) }}C
+          {% else %}
+            --C
+          {% endif %}
+    - delay:
+        seconds: 5
+    - service: mqtt.publish
+      data:
+        topic: cmnd/tasmota_46041E/Displayclear
+        payload: ''
+    - service: mqtt.publish
+      data:
+        topic: cmnd/tasmota_46041E/Displaytext
+        payload: '{{ now().strftime(''%d/%m'') }}'
+    - delay:
+        seconds: 5
+    - service: mqtt.publish
+      data:
+        topic: cmnd/tasmota_46041E/Displayclear
+        payload: ''
+    - delay:
+        milliseconds: 200
+    - service: mqtt.publish
+      data:
+        topic: cmnd/tasmota_46041E/Displayclock
+        payload: '1'
+
+
+- id: smart-clock-unified-sender
+  alias: Smart Clock - Unified Display Sender
+  description: Sends all important events to smart clock via Displaytext
+  triggers:
+  - entity_id:
+    - switch.fyshh_lshhn
+    - switch.tlfzywn_lnwm
+    - switch.living_room_switch_switch_1
+    - switch.living_room_switch_switch_2
+    - switch.living_room_switch_switch_3
+    - switch.mfth_nwr_lnwm
+    - switch.nwr_lnwm
+    - switch.mfth_khrb_lnwm
+    - switch.nwr_lntryh
+    - switch.nwr_lslm
+    - switch.nwr_lhmm
+    - switch.gpiod_speaker_power
+    - switch.gpiod_fan_rpby
+    - light.nwr_lyd_lnwm
+    - light.nwr_lyd_lm_yshh
+    - light.kitchen_light
+    - light.nwr_lsfrh
+    - media_player.living_room_tv
+    - media_player.playstation_5
+    - media_player.fire_tv
+    trigger: state
+  conditions:
+  - condition: template
+    value_template: "{{ trigger.from_state is not none\n   and trigger.to_state is not none\n   and trigger.from_state.state != trigger.to_state.state }}\n"
+  
+  # Don't run if Timer/Alarm is active
+  - condition: template
+    value_template: "{{ states('input_select.smart_clock_priority') != 'timer_alarm' }}"
+  
+  actions:
+  # ⚡ SET PRIORITY (فقط، بدون تنضيف!)
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.smart_clock_priority
+    data:
+      option: unified
+  
+  - variables:
+      display_power_entity: switch.smart_clock
+      was_off: '{{ is_state(display_power_entity, ''off'') }}'
+  - if:
+    - '{{ was_off }}'
+    then:
+    - data:
+        topic: cmnd/tasmota_46041E/POWER
+        payload: 'ON'
+      action: mqtt.publish
+    - delay:
+        milliseconds: 300
+  - data:
+      topic: cmnd/tasmota_46041E/Displayclear
+      payload: ''
+    action: mqtt.publish
+  - data:
+      topic: cmnd/tasmota_46041E/Displayclock
+      payload: '0'
+    action: mqtt.publish
+  - delay:
+      milliseconds: 200
+  - variables:
+      entity: '{{ trigger.entity_id }}'
+      state: '{{ trigger.to_state.state }}'
+      name: '{{ entity.split(''.'')[-1] | replace(''_'', '' '') | upper }}'
+  - data:
+      topic: cmnd/tasmota_46041E/Displaytext
+      payload: "{% if 'occupancy' in entity or 'presence' in entity %}\n  Motion {{ name }} : Now Is {{ 'ON' if state == 'on' else 'OFF' }}\n{% elif 'switch' in entity %}\n  {{ name }} : Now Is {{ 'ON' if state == 'on' else 'OFF' }}\n{% elif 'light' in entity %}\n  {{ name }} : Now Is {{ 'ON' if state == 'on' else 'OFF' }}\n{% elif 'temperature' in entity %}\n  Temp {{ state }}°C\n{% elif 'humidity' in entity %}\n  Hum {{ state }}%\n{% elif 'dewpoint' in entity %}\n  Dew {{ state }}°C\n{% elif 'media_player' in entity %}\n  {{ name }} : Now Is {{ 'Playing' if state == 'playing' else state|capitalize }}\n{% else %}\n  {{ name }} {{ state }}\n{% endif %}\n"
+    action: mqtt.publish
+  - delay:
+      seconds: 15
+  - data:
+      topic: cmnd/tasmota_46041E/Displayclear
+      payload: ''
+    action: mqtt.publish
+  - data:
+      topic: cmnd/tasmota_46041E/Displayclock
+      payload: '0'
+    action: mqtt.publish
+  - delay:
+      milliseconds: 200
+  - data:
+      topic: cmnd/tasmota_46041E/Displayclock
+      payload: '1'
+    action: mqtt.publish
+  
+  # ⚡ RESET PRIORITY (cleanup)
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.smart_clock_priority
+    data:
+      option: idle
+  
+  - if:
+    - condition: template
+      value_template: '{{ was_off }}'
+    then:
+    - data:
+        topic: cmnd/tasmota_46041E/POWER
+        payload: 'OFF'
+      action: mqtt.publish
+  mode: queued
+  
+  
+- id: smart_clock_alexa_timer_alarm
+  alias: Smart Clock - Alexa Timer/Alarm Display
+  mode: restart
+  triggers:
+    # Kitchen Timer
+    - entity_id: sensor.kitchen_echo_dot_next_timer
+      trigger: state
+      not_to:
+        - unknown
+        - unavailable
+      id: kitchen_timer_set
+
+    - entity_id: sensor.kitchen_echo_dot_next_timer
+      trigger: state
+      to: unknown
+      id: kitchen_timer_off
+
+    # Kitchen Alarm
+    - entity_id: sensor.kitchen_echo_dot_next_alarm
+      trigger: state
+      not_to:
+        - unknown
+        - unavailable
+      id: kitchen_alarm_set
+
+    - entity_id: sensor.kitchen_echo_dot_next_alarm
+      trigger: state
+      to: unknown
+      id: kitchen_alarm_off
+
+    # Living Room Timer
+    - entity_id: sensor.living_room_echo_dot_next_timer
+      trigger: state
+      not_to:
+        - unknown
+        - unavailable
+      id: living_timer_set
+
+    - entity_id: sensor.living_room_echo_dot_next_timer
+      trigger: state
+      to: unknown
+      id: living_timer_off
+
+    # Living Room Alarm
+    - entity_id: sensor.living_room_echo_dot_next_alarm
+      trigger: state
+      not_to:
+        - unknown
+        - unavailable
+      id: living_alarm_set
+
+    - entity_id: sensor.living_room_echo_dot_next_alarm
+      trigger: state
+      to: unknown
+      id: living_alarm_off
+
+  conditions:
+    - condition: state
+      entity_id: switch.smart_clock
+      state: "on"
+    
+    # Prevent re-triggering over itself
+    - condition: template
+      value_template: >
+        {{ states('input_select.smart_clock_priority') in ['idle','timer_alarm'] }}
+
+  actions:
+    # ✅ CLEAN ANY STUCK PRIORITY (important with restart mode)
+    - service: input_select.select_option
+      target:
+        entity_id: input_select.smart_clock_priority
+      data:
+        option: idle
+    
+    # ⚡ SET PRIORITY
+    - service: input_select.select_option
+      target:
+        entity_id: input_select.smart_clock_priority
+      data:
+        option: timer_alarm
+    
+    - choose:
+        # 1. Timer/Alarm Set
+        - conditions:
+            - condition: trigger
+              id:
+                - kitchen_timer_set
+                - kitchen_alarm_set
+                - living_timer_set
+                - living_alarm_set
+          sequence:
+            - variables:
+                timer_time: >
+                  {% set raw = trigger.to_state.state %}
+                  {% if raw in ['unknown','unavailable','None',''] %}
+                    --:--
+                  {% else %}
+                    {{ as_timestamp(raw, 0) | timestamp_custom('%H:%M', true) }}
+                  {% endif %}
+                location: >
+                  {% if 'kitchen_echo_dot' in trigger.entity_id %}Kitchen{% else %}Living{% endif %}
+                type: >
+                  {% if 'timer' in trigger.entity_id %}Timer{% else %}Alarm{% endif %}
+            
+            - data:
+                topic: "cmnd/tasmota_46041E/Displayclear"
+                payload: ""
+              action: mqtt.publish
+
+            - data:
+                topic: "cmnd/tasmota_46041E/Displayclock"
+                payload: "0"
+              action: mqtt.publish
+
+            - delay:
+                milliseconds: 200
+
+            - data:
+                topic: "cmnd/tasmota_46041E/Displaytext"
+                payload: "{{ location }} {{ type }} at {{ timer_time }}"
+              action: mqtt.publish
+
+            - delay:
+                seconds: 10
+
+            - data:
+                topic: "cmnd/tasmota_46041E/Displayclear"
+                payload: ""
+              action: mqtt.publish
+
+            - data:
+                topic: "cmnd/tasmota_46041E/Displayclock"
+                payload: "0"
+              action: mqtt.publish
+
+            - delay:
+                milliseconds: 200
+
+            - data:
+                topic: "cmnd/tasmota_46041E/Displayclock"
+                payload: "1"
+              action: mqtt.publish
+
+        # 2. Timer/Alarm OFF (ended/dismissed)
+        - conditions:
+            - condition: trigger
+              id:
+                - kitchen_timer_off
+                - kitchen_alarm_off
+                - living_timer_off
+                - living_alarm_off
+          sequence:
+            - data:
+                topic: "cmnd/tasmota_46041E/Displayclear"
+                payload: ""
+              action: mqtt.publish
+
+            - data:
+                topic: "cmnd/tasmota_46041E/Displayclock"
+                payload: "0"
+              action: mqtt.publish
+
+            - delay:
+                milliseconds: 200
+
+            - data:
+                topic: "cmnd/tasmota_46041E/Displaytext"
+                payload: "Alarm OFF"
+              action: mqtt.publish
+
+            - delay:
+                seconds: 5
+
+            - data:
+                topic: "cmnd/tasmota_46041E/Displayclear"
+                payload: ""
+              action: mqtt.publish
+
+            - data:
+                topic: "cmnd/tasmota_46041E/Displayclock"
+                payload: "0"
+              action: mqtt.publish
+
+            - delay:
+                milliseconds: 200
+
+            - data:
+                topic: "cmnd/tasmota_46041E/Displayclock"
+                payload: "1"
+              action: mqtt.publish
+    
+    # ⚡ RESET PRIORITY (cleanup)
+    - service: input_select.select_option
+      target:
+        entity_id: input_select.smart_clock_priority
+      data:
+        option: idle
+
+- id: smart_clock_timer_warning
+  alias: Smart Clock - Timer Warning (30 seconds before)
+  mode: single
+  triggers:
+    - trigger: time_pattern
+      seconds: "/15"
+  
+  conditions:
+    - condition: state
+      entity_id: switch.smart_clock
+      state: "on"
+    
+    # Don't interrupt Timer/Alarm itself
+    - condition: template
+      value_template: "{{ states('input_select.smart_clock_priority') != 'timer_alarm' }}"
+  
+  actions:
+    # ✅ CLEAN STUCK PRIORITY FIRST
+    - service: input_select.select_option
+      target:
+        entity_id: input_select.smart_clock_priority
+      data:
+        option: idle
+    
+    # ⚡ SET PRIORITY
+    - service: input_select.select_option
+      target:
+        entity_id: input_select.smart_clock_priority
+      data:
+        option: timer_alarm
+    
+    # Check all 4 sensors
+    - repeat:
+        count: 4
+        sequence:
+          - variables:
+              entity: >
+                {% if repeat.index == 1 %}sensor.kitchen_echo_dot_next_timer
+                {% elif repeat.index == 2 %}sensor.kitchen_echo_dot_next_alarm
+                {% elif repeat.index == 3 %}sensor.living_room_echo_dot_next_timer
+                {% else %}sensor.living_room_echo_dot_next_alarm
+                {% endif %}
+              loc: >
+                {% if repeat.index in [1,2] %}Kitchen{% else %}Living{% endif %}
+              typ: >
+                {% if repeat.index in [1,3] %}Timer{% else %}Alarm{% endif %}
+              remaining: >
+                {{ (as_timestamp(states(entity), 0) - as_timestamp(now())) | int }}
+          
+          # Show warning if remaining is 27-33 seconds
+          - if:
+              - condition: template
+                value_template: "{{ states(entity) not in ['unknown','unavailable'] and remaining >= 27 and remaining <= 33 }}"
+            then:
+              # Show warning
+              - data:
+                  topic: "cmnd/tasmota_46041E/Displayclear"
+                  payload: ""
+                action: mqtt.publish
+              
+              - data:
+                  topic: "cmnd/tasmota_46041E/Displayclock"
+                  payload: "0"
+                action: mqtt.publish
+              
+              - delay:
+                  milliseconds: 200
+              
+              - data:
+                  topic: "cmnd/tasmota_46041E/Displaytext"
+                  payload: "{{ loc }} {{ typ }} in 30s"
+                action: mqtt.publish
+              
+              - delay:
+                  seconds: 10
+              
+              # Back to clock
+              - data:
+                  topic: "cmnd/tasmota_46041E/Displayclear"
+                  payload: ""
+                action: mqtt.publish
+              
+              - data:
+                  topic: "cmnd/tasmota_46041E/Displayclock"
+                  payload: "0"
+                action: mqtt.publish
+              
+              - delay:
+                  milliseconds: 200
+              
+              - data:
+                  topic: "cmnd/tasmota_46041E/Displayclock"
+                  payload: "1"
+                action: mqtt.publish
+    
+    # ⚡ RESET PRIORITY
+    - service: input_select.select_option
+      target:
+        entity_id: input_select.smart_clock_priority
+      data:
+        option: idle
