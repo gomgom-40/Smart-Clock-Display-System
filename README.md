@@ -1022,10 +1022,10 @@ automation:
 Displays a warning 30 seconds before any timer/alarm expires.
 
 **How it works:**
-- Runs every 15 seconds
+- Runs every 15-60 seconds
 - Checks all 4 timer/alarm sensors
 - If remaining time is between 27-33 seconds, displays warning
-- Uses 6-second window to ensure warning is not missed
+- Uses 6-second window or more to ensure warning is not missed
 
 ```yaml
 automation:
@@ -1919,7 +1919,6 @@ SOFTWARE.
 
 ---
 
-## 🙏 Acknowledgments
 
 ## 🙏 Acknowledgments
 
