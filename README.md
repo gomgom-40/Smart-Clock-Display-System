@@ -56,7 +56,7 @@ An intelligent LED matrix display system that seamlessly integrates with your sm
 
 ## 🎥 Demo
 
-https://github.com/user-attachments/assets/60fb7f80-eb80-4bc2-933a-f760bb469c86
+[![Demo](media/demo.gif)](https://youtu.be/56zUq6O74Sw)
 
 ▶️ [Watch on YouTube](https://youtu.be/56zUq6O74Sw)
 
