@@ -16,7 +16,7 @@
 
 This project converts basic **MAX7219 LED Matrix modules** into a **smart display system** with:
 
-![System Demo](IMG_1442.JPG)
+![System Demo](images/IMG_1442.JPG)
 
 ---
 
@@ -1746,14 +1746,39 @@ automation:
 All configuration files are included in this repository:
 
 ```
-event-driven display/
-├── Smart_Clock_DATA.txt           # Tasmota setup instructions
-├── Clock_automations.txt          # Home Assistant automations
-├── Clock_scripts.txt              # Home Assistant scripts
-├── all_entity_id-1-2026.txt       # Monitored entities list
-├── pixelmix.ttf                   # Display font
-├── Config_tasmota_46041E.dmp      # Tasmota configuration backup
-└── README.md                      # This file
+smart-clock-display-system/
+├── README.md                      # This file
+├── CHANGELOG.md                   # Version history
+├── LICENSE                        # MIT License
+│
+├── config/
+│   ├── automations/
+│   │   ├── Clock_automations.txt (v1.0.0)
+│   │   └── Clock_automations_v1.1.0.txt
+│   ├── scripts/
+│   │   └── Clock_scripts.txt
+│   └── tasmota/
+│       └── Config_tasmota_46041E.dmp
+│
+├── docs/
+│   ├── RELEASE_NOTES_v1.1.0.md
+│   └── Smart_Clock_DATA.txt
+│
+├── firmware/
+│   └── tasmota-max7219.bin
+│
+├── fonts/
+│   └── pixelmix.ttf
+│
+├── images/
+│   ├── IMG_1437.JPG
+│   └── IMG_1442.JPG
+│
+├── media/
+│   └── demo.gif
+│
+└── reference/
+    └── all_entity_id-1-2026.txt
 ```
 
 ---
@@ -1952,10 +1977,10 @@ SOFTWARE.
 
 ### System Photos
 
-![Display in Action](IMG_1442.JPG)
+![Display in Action](images/IMG_1442.JPG)
 *Clock Display Mode*
 
-![Complete Setup](IMG_1437.JPG)
+![Complete Setup](images/IMG_1437.JPG)
 *Full System Installation*
 
 ---
