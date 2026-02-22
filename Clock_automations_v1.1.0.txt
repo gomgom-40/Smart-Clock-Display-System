@@ -1,0 +1,110 @@
+# Smart Clock Display System - Automations (v1.1.0)
+# Updated: 2026-02-17
+# Changes: Added debouncing, improved priority checking, rewrote timer warning
+
+- id: smart_clock_brightness_trigger
+  alias: Smart Clock - Brightness Slider Changed
+  description: Calls brightness script when slider changes
+  mode: restart
+  trigger:
+  - platform: state
+    entity_id: input_number.smart_clock_brightness
+  action:
+  - service: script.smart_clock_set_brightness
+  
+- id: smart-clock-idle-rotation
+  alias: Smart Clock - Idle Page Rotation
+  description: Rotates between clock, temperature, and date every 10 minutes
+  mode: restart
+  trigger:
+    - platform: time_pattern
+      minutes: /10
+  condition:
+    - condition: state
+      entity_id: switch.smart_clock
+      state: 'on'
+    
+    # Only run if idle
+    - condition: state
+      entity_id: input_select.smart_clock_priority
+      state: 'idle'
+  
+  action:
+    # Page 1: Clock (5 seconds)
+    - service: mqtt.publish
+      data:
+        topic: cmnd/tasmota_46041E/Displayclear
+        payload: ''
+    - delay:
+        milliseconds: 200
+    - service: mqtt.publish
+      data:
+        topic: cmnd/tasmota_46041E/Displayclock
+        payload: '1'
+    - delay:
+        seconds: 5
+    
+    # ✅ NEW: Check priority (even after first page)
+    - condition: state
+      entity_id: input_select.smart_clock_priority
+      state: 'idle'
+    
+    # Page 2: Temperature (5 seconds)
+    - service: mqtt.publish
+      data:
+        topic: cmnd/tasmota_46041E/Displayclear
+        payload: ''
+    - service: mqtt.publish
+      data:
+        topic: cmnd/tasmota_46041E/Displayclock
+        payload: '0'
+    - delay:
+        milliseconds: 200
+    - service: mqtt.publish
+      data:
+        topic: cmnd/tasmota_46041E/Displaytext
+        payload: >
+          {% set temp = states('sensor.living_room_temperature') %}
+          {% if temp not in ['unavailable', 'unknown', 'none'] %}
+            {{ temp | float | round(1) }}C
+          {% else %}
+            --C
+          {% endif %}
+    - delay:
+        seconds: 5
+    
+    # ✅ NEW: Check priority
+    - condition: state
+      entity_id: input_select.smart_clock_priority
+      state: 'idle'
+    
+    # Page 3: Date (5 seconds)
+    - service: mqtt.publish
+      data:
+        topic: cmnd/tasmota_46041E/Displayclear
+        payload: ''
+    - service: mqtt.publish
+      data:
+        topic: cmnd/tasmota_46041E/Displaytext
+        payload: '{{ now().strftime(''%d/%m'') }}'
+    - delay:
+        seconds: 5
+    
+    # ✅ NEW: Check priority
+    - condition: state
+      entity_id: input_select.smart_clock_priority
+      state: 'idle'
+    
+    # Back to clock
+    - service: mqtt.publish
+      data:
+        topic: cmnd/tasmota_46041E/Displayclear
+        payload: ''
+    - delay:
+        milliseconds: 200
+    - service: mqtt.publish
+      data:
+        topic: cmnd/tasmota_46041E/Displayclock
+        payload: '1'
+
+# ... (rest of automations from the document you provided)

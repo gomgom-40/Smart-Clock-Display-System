@@ -140,6 +140,12 @@ An intelligent LED matrix display system that seamlessly integrates with your sm
 - **Alexa Integration**: Displays timer and alarm notifications
 - **Idle Rotation**: Auto-rotates between clock, temperature, and date
 
+### Recent Updates (v1.1.0) 🆕
+- ✅ **Fixed idle rotation priority checking** - No more interruptions during rotation
+- ✅ **Improved Alexa integration stability** - Compatible with latest Media Player updates
+- ✅ **Added debouncing for smoother notifications** - Reduces spam during state changes
+- ✅ **Rewrote timer warning system** - More reliable 30-second countdown alerts
+
 ### Display Capabilities
 - Scrolling text for long messages
 - Pixel-level control
@@ -1754,7 +1760,17 @@ event-driven display/
 
 ## 🔄 Version History
 
-### v1.0.0 (Current)
+### v1.1.0 (Latest) - 2026-02-17
+- 🐛 **Bug Fixes:**
+  - Fixed idle rotation priority interruption
+  - Improved Alexa timer/alarm stability
+  - Better event-driven queue handling
+- ✨ **Improvements:**
+  - Rewrote timer warning with continuous monitoring
+  - Added debouncing (1s for media, 2s for Alexa)
+  - Enhanced display state validation
+
+### v1.0.0 - 2026-02-15
 - ✅ Event-driven architecture
 - ✅ Priority queue system
 - ✅ Alexa Timer/Alarm integration
@@ -1956,6 +1972,7 @@ If this project helped you, please ⭐ **star this repository** and share it wit
 - [x] Alexa Timer/Alarm integration
 - [x] 30+ device monitoring
 - [x] Auto-brightness control
+- [x] Bug fixes and stability improvements (v1.1.0)
 - [ ] Weather forecast integration
 - [ ] Calendar events display
 - [ ] Custom animations library

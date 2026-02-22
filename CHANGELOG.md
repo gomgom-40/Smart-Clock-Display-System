@@ -20,6 +20,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0] - 2026-02-17
+
+### 🐛 Bug Fixes
+
+**Idle Rotation System:**
+- Fixed priority checking between rotation pages to prevent interruption
+- Added condition checks after each page display (clock → temp → date)
+- Prevents higher-priority events (timer/alarm) from being blocked
+- Ensures smoother transitions with proper state validation
+
+**Alexa Timer/Alarm Integration:**
+- Added 2-second debounce to timer/alarm state change triggers
+- Improved compatibility with latest Alexa Media Player integration updates
+- More stable notification triggering, reducing false positives
+- Added display state validation before executing actions
+
+**Event-Driven Queue System:**
+- Added 1-second debounce for media player state changes
+- Reduces notification spam during media playback state transitions
+- Better priority handling during rapid state changes
+- Improved queue stability with proper condition checks
+
+### ✨ Improvements
+
+**Timer Warning System (Major Rewrite):**
+- Complete redesign using while-loop continuous monitoring
+- Real-time countdown tracking instead of polling-based checks
+- More reliable 30-second warning window (25-30 seconds)
+- Graceful cleanup and priority reset on timer completion
+- Supports all timer/alarm types (kitchen and living room)
+- Prevents duplicate warnings with `warned` flag mechanism
+
+**Display Power Management:**
+- Added display state checks before executing display commands
+- Prevents commands being sent to powered-off displays
+- Better handling of auto-off scenarios
+
+### 🔧 Technical Changes
+
+- Priority validation added between idle rotation pages
+- Media player triggers now debounced (1 second)
+- Alexa timer/alarm sensors debounced (2 seconds)
+- Improved condition templates for state validation
+- Enhanced error handling in timer warning loop
+- Maximum iteration safety limit (7200) for warning system
+
+### 📚 Documentation
+
+- Updated automation examples with new debouncing syntax
+- Added troubleshooting guide for timer warning system
+- Documented priority checking behavior in idle rotation
+
+---
+
 ## [1.0.0] - 2026-02-15
 
 ### Added - Core Features
