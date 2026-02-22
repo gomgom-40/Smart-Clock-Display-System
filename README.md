@@ -141,7 +141,7 @@ An intelligent LED matrix display system that seamlessly integrates with your sm
 - **Idle Rotation**: Auto-rotates between clock, temperature, and date
 
 ### Recent Updates (v1.1.0) 🆕
-- ✅ **Fixed idle rotation priority checking** - No more interruptions during rotation
+- ✅ **Fixed idle rotation priority checking** - No more interruptions during notification
 - ✅ **Improved Alexa integration stability** - Compatible with latest Media Player updates
 - ✅ **Added debouncing for smoother notifications** - Reduces spam during state changes
 - ✅ **Rewrote timer warning system** - More reliable 30-second countdown alerts
