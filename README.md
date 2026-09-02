@@ -4,7 +4,7 @@
 [![Tasmota](https://img.shields.io/badge/Tasmota-MAX7219-blue.svg)](https://tasmota.github.io/docs/MAX7219/)
 [![MQTT](https://img.shields.io/badge/MQTT-Protocol-orange.svg)](https://mqtt.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Made in Egypt](https://img.shields.io/badge/Made%20in-Egypt%20🇪🇬-green.svg)](https://github.com/gomgom-40)
+[![Made in Egypt](https://img.shields.io/badge/For%20More-Inf%20o-green.svg)](https://github.com/gomgom-40)
 
 > One of the first event-driven MAX7219 display systems featuring an intelligent priority queue for conflict-free smart-home rendering.
 
